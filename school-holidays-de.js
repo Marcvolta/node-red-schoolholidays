@@ -59,10 +59,12 @@ module.exports = function (RED) {
 
         for (const [key, val] of mParams.entries()) {
           if (!buttonEnabled && !val) {
-            var keyName = `${key}`;
-            node.warn("No " + keyName + " specified. Please select one.");
-            done();
-            return;
+            if (key !== "buttonEnabled") {
+              var keyName = `${key}`;
+              node.warn("No " + keyName + " specified. Please select one.");
+              done();
+              return;
+            }
           }
         }
 
