@@ -1,0 +1,33 @@
+{
+  "name": "node-red-contrib-school-holidays-de",
+  "version": "1.0.0",
+  "description": "A Node-RED node to retrieve school holidays for Germany",
+  "license": "ISC",
+  "author": "Marco Eberlein",
+  "type": "commonjs",
+  "main": "school-holidays-de.js",
+  "keywords": [
+    "node-red",
+    "school",
+    "holidays",
+    "germany",
+    "vacation"
+  ],
+  "node-red": {
+    "nodes": {
+      "school-holidays-de": "school-holidays-de.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Marcvolta/node-red-school-holidays-de"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

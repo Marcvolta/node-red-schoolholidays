@@ -1,0 +1,237 @@
+<script type="text/javascript">
+  RED.nodes.registerType("school-holidays-de", {
+    category: "function",
+    color: "#a6bbcf",
+    defaults: {
+      name: { value: "" },
+      apikey: { value: "", required: true },
+      state: { value: "alle", required: false },
+      year: { value: "", required: false },
+      holidayType: { value: "", required: false },
+      outputFormat: { value: "array" },
+      buttonEnabled: { value: false },
+      holidaySelectionMode: { value: "current", required: false },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "font-awesome/fa-calendar",
+    label: function () {
+      return this.name || "Schulferien DE";
+    },
+    paletteLabel: "Schulferien DE",
+    oneditprepare: function () {
+      const node = this;
+      const $buttonEnabled = $("#node-input-buttonEnabled");
+      const $buttonOptions = $("#holidays-button-options");
+
+      //const $holidaySelectionMode = $("#node-input-holidaySelectionMode");
+      const $allOptionsDiv = $("#allOptionsDiv");
+
+      const refreshButtonOptions = () => {
+        const enabled = $buttonEnabled.prop("checked");
+        console.log("Checkbox checked:", enabled);
+
+        if (enabled) {
+          $buttonOptions.show();
+          $allOptionsDiv.hide();
+        } else {
+          $buttonOptions.hide();
+          $allOptionsDiv.show();
+        }
+      };
+
+      $buttonEnabled.on("change", refreshButtonOptions);
+
+      // Initialize on load
+      refreshButtonOptions();
+    },
+  });
+</script>
+
+<script type="text/html" data-template-name="school-holidays-de">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <div class="form-tips">
+      <strong>Get a key:</strong>
+      <a href="https://www.schulferien.app">schulferien.app</a>
+    </div>
+  </div>
+  <div class="form-row">
+    <label for="node-input-apikey"><i class="fa fa-tag"></i> API key </label>
+    <input type="text" id="node-input-apikey" placeholder="API key" />
+  </div>
+  <hr />
+  <div class="form-row">
+    <label for="node-input-state"
+      ><i class="fa fa-map-marker"></i> Bundesland</label
+    >
+    <select id="node-input-state" style="width: 70%">
+      <option value="">-- Select State --</option>
+      <option value="all" selected>Alle</option>
+      <option value="BW">Baden-Württemberg</option>
+      <option value="BY">Bayern</option>
+      <option value="BE">Berlin</option>
+      <option value="BB">Brandenburg</option>
+      <option value="HB">Bremen</option>
+      <option value="HH">Hamburg</option>
+      <option value="HE">Hessen</option>
+      <option value="MV">Mecklenburg-Vorpommern</option>
+      <option value="NI">Niedersachsen</option>
+      <option value="NW">Nordrhein-Westfalen</option>
+      <option value="RP">Rheinland-Pfalz</option>
+      <option value="SL">Saarland</option>
+      <option value="SN">Sachsen</option>
+      <option value="ST">Sachsen-Anhalt</option>
+      <option value="SH">Schleswig-Holstein</option>
+      <option value="TH">Thüringen</option>
+    </select>
+  </div>
+
+  <div class="form-row">
+    <input
+      type="checkbox"
+      id="node-input-buttonEnabled"
+      style="display:inline-block; width:auto; vertical-align:top;"
+    />
+    <label style="width: 85%;" for="node-input-buttonEnabled">
+      <i class="fa fa-mouse-pointer"></i> Nur folgende Treffer zeigen
+      <span data-i18n="holidays.button.enable"></span>
+    </label>
+  </div>
+
+  <div id="holidays-button-options" style="display:none">
+    <div class="form-row">
+      <label for="node-input-holidaySelectionMode">
+        <i class="fa fa-bolt"></i>
+        <span data-i18n="holidays.button.mode"></span>
+      </label>
+      <select id="node-input-holidaySelectionMode" style="width:220px;">
+        <option
+          value="current"
+          data-i18n="holidays.button.mode_toggle"
+          selected
+        >
+          Aktuell
+        </option>
+        <option value="next" data-i18n="holidays.button.mode_value">
+          Nächste
+        </option>
+        <option value="next" data-i18n="holidays.button.mode_value">
+          Kommende
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div id="allOptionsDiv">
+    <div class="form-row">
+      <label for="node-input-year"><i class="fa fa-map-marker"></i> Jahr</label>
+      <select id="node-input-year" style="width: 70%">
+        <option value="">-- Select Jahr --</option>
+        <option value="2023">2023/24</option>
+        <option value="2024">2024/25</option>
+        <option value="2025">2025/26</option>
+        <option value="2026">2026/27</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label for="node-input-holidayType"
+        ><i class="fa fa-map-marker"></i> Ferienart</label
+      >
+      <select id="node-input-holidayType" style="width: 70%">
+        <option value="">-- Select Ferienart --</option>
+        <option value="all" selected>Alle</option>
+        <option value="Herbstferien">Herbstferien</option>
+        <option value="Weihnachtsferien">Weihnachtsferien</option>
+        <option value="Winterferien">Winterferien</option>
+        <option value="Osterferien/Frühjahrsferien">
+          Osterferien/Frühjahrsferien
+        </option>
+        <option value="Himmelfahrt/Pfingsten">Himmelfahrt/Pfingsten</option>
+        <option value="Winterferien">Sommerferien</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label for="node-input-outputFormat"
+        ><i class="fa fa-list"></i> Output Format</label
+      >
+      <select id="node-input-outputFormat" style="width: 70%">
+        <option value="array">Array</option>
+        <option value="object">Object with metadata</option>
+      </select>
+    </div>
+    <div class="form-tips">
+      <strong>Tip:</strong> You can override the state by setting
+      <code>msg.state</code>
+    </div>
+  </div>
+</script>
+
+<script type="text/html" data-help-name="school-holidays-de">
+  <p>A Node-RED node to retrieve school holidays for German states.</p>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt class="optional">state <span class="property-type">string</span></dt>
+    <dd>
+      The German state code (e.g., "BW", "BY"). Overrides the configured state.
+    </dd>
+  </dl>
+
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">array | object</span></dt>
+    <dd>
+      <p>The school holidays data for the specified state.</p>
+      <ul>
+        <li>
+          <strong>Array format:</strong> Returns an array of holiday objects.
+        </li>
+        <li>
+          <strong>Object format:</strong> Returns an object with state, holidays
+          array, and fetched timestamp.
+        </li>
+      </ul>
+    </dd>
+  </dl>
+
+  <h3>Details</h3>
+  <p>
+    This node retrieves school holiday information for German states. You can
+    configure the state in the node settings or provide it dynamically via
+    <code>msg.state</code>.
+  </p>
+
+  <h4>German States:</h4>
+  <ul>
+    <li>BW - Baden-Württemberg</li>
+    <li>BY - Bayern</li>
+    <li>BE - Berlin</li>
+    <li>BB - Brandenburg</li>
+    <li>HB - Bremen</li>
+    <li>HH - Hamburg</li>
+    <li>HE - Hessen</li>
+    <li>MV - Mecklenburg-Vorpommern</li>
+    <li>NI - Niedersachsen</li>
+    <li>NW - Nordrhein-Westfalen</li>
+    <li>RP - Rheinland-Pfalz</li>
+    <li>SL - Saarland</li>
+    <li>SN - Sachsen</li>
+    <li>ST - Sachsen-Anhalt</li>
+    <li>SH - Schleswig-Holstein</li>
+    <li>TH - Thüringen</li>
+  </ul>
+
+  <h3>References</h3>
+  <ul>
+    <li>
+      <a href="https://github.com/Marcvolta/node-red-school-holidays-de"
+        >GitHub</a
+      >
+      - the node's github repository
+    </li>
+  </ul>
+</script>
