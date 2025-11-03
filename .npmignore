@@ -1,0 +1,18 @@
+# Development files
+.claude/
+.vscode/
+.idea/
+
+.claude
+
+# Testing
+coverage/
+.nyc_output/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.gitignore
+.git/

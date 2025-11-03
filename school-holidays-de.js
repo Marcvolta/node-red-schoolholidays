@@ -1,10 +1,14 @@
 module.exports = function (RED) {
   const http = require("http");
+  const https = require("https");
 
   function SchoolHolidaysDeNode(config) {
     RED.nodes.createNode(this, config);
     var node = this;
     var mParams = new Map();
+
+    const host = "www.schulferien.app";
+    const port = 443;
 
     // Store configuration
     node.apikey = config.apikey || "";
@@ -80,8 +84,8 @@ module.exports = function (RED) {
         }
 
         const options = {
-          hostname: "localhost",
-          port: 8080,
+          hostname: host,
+          port: port,
           path: apiURL + `${queryParams.toString()}`,
           method: "GET",
           headers: {
@@ -90,7 +94,7 @@ module.exports = function (RED) {
           },
         };
 
-        const req = http.request(options, (res) => {
+        const req = https.request(options, (res) => {
           let data = "";
 
           res.on("data", (chunk) => {
